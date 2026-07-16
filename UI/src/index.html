@@ -1,0 +1,93 @@
+<!doctype html>
+<html
+  lang="en"
+  class="h-full bg-neutral-50 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100 transition-colors duration-200"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corey - AI Interface</title>
+    <link rel="stylesheet" href="../dist/output.css" />
+  </head>
+  <body
+    class="h-full w-full flex flex-col font-sans antialiased selection:bg-neutral-200 dark:selection:bg-neutral-800 transition-colors duration-200 overflow-hidden"
+  >
+    <div
+      id="interface-root"
+      class="flex-1 flex flex-col p-4 w-full max-w-7xl mx-auto h-full justify-between overflow-hidden"
+    >
+      <div class="flex justify-end items-center mb-2 flex-shrink-0">
+        <button
+          id="theme-toggle"
+          class="p-1.5 bg-neutral-200/50 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 border border-neutral-300 dark:border-neutral-700 rounded-md transition-all cursor-pointer"
+        >
+          <img
+            id="theme-icon"
+            src="../icons/moon.svg"
+            class="w-3.5 h-3.5 dark:invert"
+            alt="Theme Toggle"
+          />
+        </button>
+      </div>
+
+      <div
+        class="flex-1 flex flex-col items-center justify-center space-y-4 min-h-0"
+      >
+        <div
+          class="relative w-full h-[45vh] sm:h-[50vh] max-w-xl flex items-center justify-center flex-shrink min-h-0"
+        >
+          <div
+            class="absolute inset-0 bg-cyan-500/5 dark:bg-purple-500/5 rounded-full blur-3xl pointer-events-none"
+          ></div>
+          <canvas
+            id="visualizer-canvas"
+            class="w-full h-full block z-10"
+          ></canvas>
+        </div>
+
+        <p
+          id="status-text"
+          class="text-[10px] tracking-widest uppercase text-neutral-400 dark:text-neutral-500 font-semibold select-none transition-opacity duration-300 opacity-40 flex-shrink-0"
+        >
+          Click anywhere to activate mic
+        </p>
+      </div>
+
+      <div class="w-full max-w-3xl mx-auto mt-2 pt-2 flex-shrink-0">
+        <div
+          class="relative flex items-center bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xl px-4 py-2.5 focus-within:border-neutral-400 dark:focus-within:border-neutral-600 transition-all"
+        >
+          <button
+            id="mic-shortcut"
+            class="p-1.5 text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200 rounded-md transition-colors cursor-pointer mr-2"
+          >
+            <img
+              src="../icons/audio-lines.svg"
+              class="w-4 h-4 dark:invert"
+              alt="Audio Input"
+            />
+          </button>
+
+          <textarea
+            rows="1"
+            placeholder="Ask Corey anything..."
+            class="flex-1 bg-transparent border-0 outline-none text-sm text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 resize-none max-h-24 focus:ring-0 focus:outline-none"
+            style="line-height: 1.5"
+          ></textarea>
+
+          <button
+            class="p-1.5 ml-2 bg-neutral-800 hover:bg-neutral-900 dark:bg-neutral-100 dark:hover:bg-neutral-200 text-neutral-100 dark:text-neutral-900 rounded-lg transition-colors cursor-pointer"
+          >
+            <img
+              src="../icons/arrow-right.svg"
+              class="w-3.5 h-3.5 dark:invert-0 invert"
+              alt="Send"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+  </body>
+</html>

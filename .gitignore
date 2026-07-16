@@ -1,0 +1,41 @@
+# ==========================================
+# Dependencies & Node (if using packages)
+# ==========================================
+node_modules/
+jspm_packages/
+web_modules/
+.pnp/
+.pnp.js
+
+# ==========================================
+# Compiled Assets & Build Outputs
+# ==========================================
+# Ignore the compiled output of Tailwind, but keep source files
+UI/dist/
+*.css.map
+
+# ==========================================
+# Local System Hardware & Python Utilities
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+ENV/
+*.log
+
+# ==========================================
+# IDEs, Editors, & OS Files
+# ==========================================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store
+Thumbs.db
