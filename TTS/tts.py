@@ -1,58 +1,63 @@
 """
-Free, fully offline TTS using Piper.
-Voice: en_US-lessac-medium (clean, professional American female voice)
+Free, fully offline TTS using Piper — streams audio directly to speakers,
+no file ever hits disk.
 
 SETUP (one-time):
     pip install piper-tts --break-system-packages
-
-    Then download the voice model (only needs internet this one time):
-    python -m piper.download_voices en_US-lessac-medium
+    python -m piper.download_voices en_US-amy-medium
 
 USAGE:
-    python tts.py "Hello, this is a test." output.wav
-    python tts.py "Hello, this is a test."          # plays "output.wav" by default
+    python tts.py "Hello, this is a test."
+
+    Or import and call speak() from brain.py:
+        from TTS.tts import speak
+        speak("Hello there.")
 """
 
 import os
 import sys
-import wave
-import platform
-import subprocess
+import numpy as np
+import sounddevice as sd
 from piper import PiperVoice
 
-VOICE_MODEL = "en_US-amy-medium.onnx"  # swap for another downloaded voice if you like
+# Absolute path, anchored to this file's location — works no matter what
+# directory the script is run from (e.g. brain.py running from Corey/ root)
+VOICE_MODEL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "en_US-amy-medium.onnx")
+
+# Loaded once, reused across calls (brain.py will call speak() a lot)
+_voice = None
 
 
-def speak(text: str, out_path: str = "output.wav", play: bool = True):
-    voice = PiperVoice.load(VOICE_MODEL)
-
-    with wave.open(out_path, "wb") as wav_file:
-        voice.synthesize_wav(text, wav_file)
-
-    print(f"Saved audio to {out_path}")
-
-    if play:
-        play_audio(out_path)
+def get_voice() -> PiperVoice:
+    global _voice
+    if _voice is None:
+        _voice = PiperVoice.load(VOICE_MODEL)
+    return _voice
 
 
-def play_audio(path: str):
-    system = platform.system()
+def speak(text: str):
+    """Synthesize and play text in real time, chunk by chunk. No file saved."""
+    if not text or not text.strip():
+        return
+
+    voice = get_voice()
+    sample_rate = voice.config.sample_rate
+
+    stream = sd.OutputStream(samplerate=sample_rate, channels=1, dtype="int16")
+    stream.start()
     try:
-        if system == "Windows":
-            os.startfile(path)  # opens with default player (e.g. Media Player/browser)
-        elif system == "Darwin":
-            subprocess.run(["afplay", path])
-        else:
-            subprocess.run(["aplay", path])
-    except Exception as e:
-        print(f"Could not auto-play audio ({e}). Open {path} manually to listen.")
+        for chunk in voice.synthesize(text):
+            # chunk.audio_int16_bytes is raw PCM for this piece of audio
+            audio = np.frombuffer(chunk.audio_int16_bytes, dtype=np.int16)
+            stream.write(audio)
+    finally:
+        stream.stop()
+        stream.close()
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print('Usage: python tts.py "your text here" [output.wav]')
+        print('Usage: python tts.py "your text here"')
         sys.exit(1)
 
-    text = sys.argv[1]
-    out_path = sys.argv[2] if len(sys.argv) > 2 else "output.wav"
-    speak(text, out_path)
+    speak(sys.argv[1])
